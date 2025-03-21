@@ -64,7 +64,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
   }
 
   if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_H) {
-    if (frect.x <= 0 + 10) {
+    if (frect.x <= 0) {
       return SDL_APP_CONTINUE;
     }
 
@@ -99,17 +99,17 @@ SDL_AppIterate(void* appstate) {
   /* const SDL_Rect rect = {.x = 50, .y = 100, .w = 20, .h = 30}; */
   /* SDL_RenderRect(renderer, &frect); */
 
-  char rectange_x_location[3], rectange_y_location[3];
-  SDL_itoa((int)frect.x, rectange_x_location, 10);
-  SDL_itoa((int)frect.y, rectange_y_location, 10);
+  char rectange_x_location[4], rectange_y_location[4];
+  SDL_itoa(frect.x, rectange_x_location, 10);
+  SDL_itoa(frect.y, rectange_y_location, 10);
   /* Draw the message */
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderClear(renderer);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   SDL_RenderDebugText(renderer, x, y, message);
   SDL_RenderFillRect(renderer, &frect);
-  SDL_RenderDebugText(renderer, x, y + 10, rectange_x_location);
-  SDL_RenderDebugText(renderer, x, y + 20, rectange_y_location);
+  SDL_RenderDebugText(renderer, 0, 0, rectange_x_location);
+  SDL_RenderDebugText(renderer, 0, 10, rectange_y_location);
   SDL_RenderPresent(renderer);
 
   return SDL_APP_CONTINUE;
