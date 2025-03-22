@@ -4,47 +4,35 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-enum TYPES {
-  AVAILABLE = 1,
-  USED_BY_SNAKE_TAIL,
-  USED_BY_SNAKE_HEAD,
-  USED_BY_FOOD,
-  USED_BY_TOP_BORDER,
-  USED_BY_TOP_RIGHT_BORDER,
-  USED_BY_RIGHT_BORDER,
-  USED_BY_BOTTOM_RIGHT_BORDER,
-  USED_BY_BOTTOM_BORDER,
-  USED_BY_BOTTOM_LEFT_BORDER,
-  USED_BY_LEFT_BORDER,
-  USED_BY_TOP_LEFT_BORDER,
-  USED_BY_MESSAGE,
-  TOTAL
-};
-enum MOVEMENTS { LEFT, UP, RIGHT, DOWN };
+#include "./coordinates.h"
+#include "./snake.h"
+#include "./types.h"
+
+// TODO(ofer987): remove NOTHING
 enum GAME_MODES { START, CONTINUE, PAUSE, WIN, QUIT };
 
-struct coordinates_struct {
-  enum TYPES type;
-  size_t x;
-  size_t y;
+struct _Game;
+typedef struct _Game Game;
 
-  struct coordinates_struct* next;
-};
+Game* init_game(size_t width, size_t height);
 
-struct snake_struct {
-  struct coordinates_struct* head;
-  size_t length;
+Snake* get_snake_location(Game* game);
+Coordinates* get_food_location(Game* game);
 
-  enum MOVEMENTS current_movement;
-};
+enum MOVEMENTS get_current_movement(Game*);
+void set_current_movement(Game*, enum MOVEMENTS);
+void rerender_screen(Game*);
 
-struct game_struct {
-  enum GAME_MODES mode;
+Coordinates* get_screen(Game*);
 
-  struct snake_struct* snake;
-};
+bool change_food_location(Game*);
 
-struct game_struct*
-init_game(size_t width, size_t height);
+Coordinates* get_top_left_corner(Game* game);
+Coordinates* get_bottom_left_corner(Game* game);
+Coordinates* get_top_right_corner(Game* game);
+Coordinates* get_bottom_right_corner(Game* game);
 
-#endif  // SNAKE_SDL_SNAKE_SDL_GAME_H_
+enum GAME_MODES get_game_mode(Game* game);
+void set_game_mode(Game* game, enum GAME_MODES mode);
+
+#endif // SNAKE_SDL_SNAKE_SDL_GAME_H_

@@ -1,0 +1,34 @@
+#ifndef SNAKE_SDL_SNAKE_SDL_TYPES_H_
+#define SNAKE_SDL_SNAKE_SDL_TYPES_H_
+
+#include <stdlib.h>
+
+enum MOVEMENTS { NOTHING, LEFT, UP, RIGHT, DOWN };
+
+enum TILE_TYPES {
+  AVAILABLE = 0,
+  USED_BY_SNAKE_TAIL,
+  USED_BY_SNAKE_HEAD,
+  USED_BY_FOOD,
+  USED_BY_TOP_BORDER,
+  USED_BY_TOP_RIGHT_BORDER,
+  USED_BY_RIGHT_BORDER,
+  USED_BY_BOTTOM_RIGHT_BORDER,
+  USED_BY_BOTTOM_BORDER,
+  USED_BY_BOTTOM_LEFT_BORDER,
+  USED_BY_LEFT_BORDER,
+  USED_BY_TOP_LEFT_BORDER,
+  USED_BY_MESSAGE,
+  TOTAL
+};
+
+typedef struct coordinates_struct {
+  enum TILE_TYPES type;
+
+  size_t x;
+  size_t y;
+
+  struct coordinates_struct* next;
+} Coordinates;
+
+#endif // SNAKE_SDL_SNAKE_SDL_TYPES_H_
