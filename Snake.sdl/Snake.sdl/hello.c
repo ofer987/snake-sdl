@@ -13,6 +13,7 @@
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_stdinc.h"
+#include "SDL3/SDL_timer.h"
 
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
@@ -23,6 +24,11 @@ static SDL_Renderer* renderer = NULL;
 
 static float right_movement_span = 0;
 static SDL_FRect frect = {.x = 50, .y = 100, .w = 20, .h = 30};
+
+static Uint64 framerate_time = 0.0f;
+
+enum MOVEMENTS { LEFT, UP, RIGHT, DOWN };
+static enum MOVEMENTS movement;
 
 /* This function runs once at startup. */
 SDL_AppResult
@@ -47,36 +53,24 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
     return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
   }
 
+  // Move to the right
   if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_L) {
-    if (frect.x >= 340) {
-      return SDL_APP_CONTINUE;
-    }
-
-    frect.x += 10.0;
+    movement = RIGHT;
   }
 
+  // Move up
   if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_K) {
-    if (frect.y <= 0) {
-      return SDL_APP_CONTINUE;
-    }
-
-    frect.y -= 10.0;
+    movement = UP;
   }
 
+  // Move left
   if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_H) {
-    if (frect.x <= 0) {
-      return SDL_APP_CONTINUE;
-    }
-
-    frect.x -= 10.0;
+    movement = LEFT;
   }
 
+  // Move down
   if (event->type == SDL_EVENT_KEY_DOWN && event->key.key == SDLK_J) {
-    if (frect.y >= (600 - 200) / 2.0) {
-      return SDL_APP_CONTINUE;
-    }
-
-    frect.y += 10.0;
+    movement = DOWN;
   }
 
   return SDL_APP_CONTINUE;
@@ -85,6 +79,45 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult
 SDL_AppIterate(void* appstate) {
+  Uint64 new_framerate_time = SDL_GetTicks();
+
+  if (new_framerate_time < framerate_time + 200) {
+    return SDL_APP_CONTINUE;
+  }
+
+  framerate_time = new_framerate_time;
+
+  switch (movement) {
+    case LEFT:
+      if (frect.x <= 0) {
+        break;
+      }
+
+      frect.x -= 10.0;
+      break;
+    case UP:
+      if (frect.y <= 0) {
+        break;
+      }
+
+      frect.y -= 10.0;
+      break;
+    case RIGHT:
+      if (frect.x >= 340) {
+        break;
+      }
+
+      frect.x += 10.0;
+      break;
+    case DOWN:
+      if (frect.y >= (600 - 200) / 2.0) {
+        break;
+      }
+
+      frect.y += 10.0;
+    default: break;
+  }
+
   const char* message = "Hello World!";
   int w = 0, h = 0;
   float x, y;
