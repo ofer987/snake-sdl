@@ -1,17 +1,10 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-/* #include "./food.h" */
 #include "./coordinates.h"
 #include "./game.h"
 #include "./snake.h"
 #include "./types.h"
-
-/* #include "./snake.h" */
-/* #include "./food.h" */
-
-/* enum GAME_MODES { START, CONTINUE, PAUSE, WIN, QUIT }; */
-/*  */
 
 struct _Game {
   enum GAME_MODES mode;
@@ -34,9 +27,6 @@ struct _Game {
 
 Snake*
 _init_snake(size_t width, size_t height) {
-  /* Coordinates* head = malloc(sizeof(Coordinates)); */
-
-  // TODO(ofer987): change count and figuring out the x, y
   size_t middle_x = (height % 2) ? ((height - 1) / 2) : (height / 2);
   size_t middle_y = (width % 2) ? ((width - 1) / 2) : (width / 2);
 
@@ -155,7 +145,6 @@ rerender_screen(Game* game) {
     }
 
     game->screen_indexer[index]->type = type;
-    /* screen[index] RENDERED_TILES.types[index] = type; */
 
     type = USED_BY_SNAKE_TAIL;
     coordinates = coordinates->next;
@@ -175,23 +164,6 @@ get_screen(Game* game) {
 
 bool
 change_food_location(Game* game) {
-  /* size_t total_tiles = MAZE_WIDTH * MAZE_WIDTH; */
-  /*  */
-  /* size_t* available_tiles = malloc(total_tiles * sizeof(size_t)); */
-  /*  */
-  /* size_t available_tile_count = 0; */
-  /* for (size_t i = 0; i < total_tiles; i += 1) { */
-  /*   if (tiles[i].type == AVAILABLE) { */
-  /*     available_tiles[available_tile_count] = i; */
-  /*  */
-  /*     available_tile_count += 1; */
-  /*   } */
-  /* } */
-  /*  */
-  /* if (available_tile_count == 0) { */
-  /*   return; */
-  /* } */
-  /*  */
   if (game->available_tiles_count == 0) {
     return false;
   }
@@ -235,8 +207,3 @@ void
 set_game_mode(Game* game, enum GAME_MODES mode) {
   game->mode = mode;
 }
-
-/* enum TILE_TYPES */
-/* get_tile_type(size_t index) { */
-/*   return RENDERED_TILES.types[index]; */
-/* } */

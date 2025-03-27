@@ -50,8 +50,6 @@ move_up(Coordinates* coordinates) {
 
 bool
 move_right(Coordinates* coordinates) {
-  // Otherwise, the right side of the box is painted
-  // TODO(ofer987): fix renderer to not paint to the right edge of the screen
   if (coordinates->x >= HORIZONTAL_TILES_COUNT - 1) {
     return false;
   }
@@ -65,8 +63,6 @@ move_right(Coordinates* coordinates) {
 
 bool
 move_down(Coordinates* coordinates) {
-  // Otherwise, the bottom side of the box is painted
-  // TODO(ofer987): fix renderer to not paint to the bottom edge of the screen
   if (coordinates->y >= VERTICAL_TILES_COUNT - 1) {
     return false;
   }
@@ -201,8 +197,3 @@ Coordinates*
 get_snake_head(Snake* snake) {
   return snake->head;
 }
-
-/*  */
-/* bool validate_left_boundary(size_t x) { */
-/*   return x > WIDTH; */
-/* } */

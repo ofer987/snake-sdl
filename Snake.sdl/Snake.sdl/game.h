@@ -8,7 +8,6 @@
 #include "./snake.h"
 #include "./types.h"
 
-// TODO(ofer987): remove NOTHING
 enum GAME_MODES { START, CONTINUE, PAUSE, WIN, QUIT };
 
 struct _Game;

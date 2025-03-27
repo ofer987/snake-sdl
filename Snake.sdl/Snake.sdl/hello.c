@@ -9,6 +9,8 @@
   including commercial applications, and to alter it and redistribute it
   freely.
 */
+#include <stdlib.h>
+#include "./types.h"
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_keycode.h"
@@ -17,9 +19,6 @@
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_stdinc.h"
 #include "SDL3/SDL_timer.h"
-/* #include "tiles.h" */
-#include <stdlib.h>
-#include "./types.h"
 
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
@@ -37,23 +36,14 @@ static SDL_FRect frect = {.x = 50, .y = 100, .w = 10, .h = 10};
 
 static Uint64 framerate_time = 0.0f;
 
-/* enum MOVEMENTS { LEFT, UP, RIGHT, DOWN }; */
-/* static enum MOVEMENTS movement; */
 static Game* game;
-/* static Tiles* tiles; */
-/* static size_t tiles_count = HORIZONTAL_TILES_COUNT * VERTICAL_TILES_COUNT; */
-static Coordinates coord;
-
-/* static struct snake_struct* snake; */
 
 /* This function runs once at startup. */
 SDL_AppResult
 SDL_AppInit(void** appstate, int argc, char* argv[]) {
   srandom(time(NULL));
 
-  /* SDL_CursorVisible(); */
-  /* SDL_ShowCursor(); */
-  bool result = SDL_HideCursor();
+  SDL_HideCursor();
 
   /* Create the window */
   if (!SDL_CreateWindowAndRenderer("Hello World", RESOLUTION_WIDTH, RESOLUTION_HEIGHT, SDL_WINDOW_FULLSCREEN, &window,
@@ -62,12 +52,7 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
     return SDL_APP_FAILURE;
   }
 
-  /* tiles = init_tiles(HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT); */
   game = init_game(HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
-  coord.type = USED_BY_FOOD;
-  /* snake = game->snake; */
-  /* frect.x = snake->head->x; */
-  /* frect.y = snake->head->y; */
 
   return SDL_APP_CONTINUE;
 }
@@ -97,7 +82,6 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
           }
 
           break;
-          /* set_current_movement(game, LEFT); break; */
         case SDLK_UP:
         case SDLK_K:
           if (current_movement != DOWN) {
@@ -162,19 +146,13 @@ SDL_AppIterate(void* appstate) {
   bool no_border_collision = rerender_snake(snake, current_movement);
   bool is_there_a_collision = has_snaked_collided(snake);
 
-  /* render_failure(); */
   if (get_game_mode(game) == QUIT) {
-    /* render_failure(); */
     set_current_movement(game, NOTHING);
   }
 
   if (!no_border_collision || is_there_a_collision) {
-    // TOOD(ofer987): Display end game message
-    /* render_failure(); */
     set_current_movement(game, NOTHING);
     set_game_mode(game, QUIT);
-
-    /* return SDL_APP_CONTINUE; */
   }
 
   rerender_screen(game);
@@ -183,25 +161,19 @@ SDL_AppIterate(void* appstate) {
   if (has_food_been_eaten) {
     change_food_location(game);
 
-    // Maybe this should be after the if condition?
-    /* rerender_snake(snake, current_movement); */
     rerender_screen(game);
   }
-
-  /* Coordinates* snake_head = get_head(snake); */
 
   // Reset
   SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
   SDL_RenderClear(renderer);
 
-  // TODO(ofer987): change back to const
   const float scale = 32.0f;
   SDL_SetRenderScale(renderer, scale, scale);
 
   // Render screen
   Coordinates* tile = get_screen(game);
   Uint8 red, green, blue;
-  /* SDL_FRect* my_frects = malloc((HORIZONTAL_TILES_COUNT) * (VERTICAL_TILES_COUNT) * sizeof(SDL_FRect)); */
   SDL_FRect my_frects[HORIZONTAL_TILES_COUNT * VERTICAL_TILES_COUNT];
   SDL_FRect* snake_head_rect = NULL;
 
@@ -211,7 +183,6 @@ SDL_AppIterate(void* appstate) {
     my_frects[index].y = tile->y + SHIFT_HEIGHT_SCREEN;
     my_frects[index].w = 1;
     my_frects[index].h = 1;
-    /* my_frect = {.x = tile->x * 10, .y = tile->y * 10, .w = WIDTH, .h = HEIGHT}; */
 
     switch (tile->type) {
       case AVAILABLE:
@@ -246,20 +217,9 @@ SDL_AppIterate(void* appstate) {
     SDL_SetRenderDrawColor(renderer, red, blue, green, 255);
     SDL_RenderFillRect(renderer, &my_frects[index]);
 
-    /* SDL_RenderFillRect(renderer, &my_frects[index]); */
-    /* SDL_RenderPresent(renderer); */
     tile = tile->next;
     index += 1;
   }
-
-  // Render Snake Head
-  Coordinates* snake_head = get_snake_head(snake);
-  red = 255;
-  blue = 0;
-  green = 0;
-  SDL_FRect snake_head_frect;
-  SDL_SetRenderDrawColor(renderer, red, blue, green, 255);
-  SDL_RenderFillRect(renderer, &snake_head_frect);
 
   red = 95;
   blue = 74;
@@ -344,40 +304,6 @@ SDL_AppIterate(void* appstate) {
   bottom_right_corner_border.h = 1;
   SDL_RenderFillRect(renderer, &bottom_right_corner_border);
 
-  /* SDL_RenderPresent(renderer); */
-  /* for (size_t i = 0; i < tiles_count; i += 1) { */
-  /*   enum TILE_TYPES type = get_tile_type(i); */
-  /*  */
-  /*   switch (expression) {} */
-  /* } */
-  /* frect.x = snake->head->x; */
-  /* frect.y = snake->head->y; */
-  /* snake->head->x = frect.x; */
-  /* snake->head->y = frect.y; */
-
-  /* const char* message = "Hello World!"; */
-  /* int w = 0, h = 0; */
-  /* float x, y; */
-
-  /* Center the message and scale it up */
-  /* SDL_GetRenderOutputSize(renderer, &w, &h); */
-  /* x = ((w / scale) - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE * SDL_strlen(message)) / 2; */
-  /* y = ((h / scale) - SDL_DEBUG_TEXT_FONT_CHARACTER_SIZE) / 2; */
-
-  /* const SDL_Rect rect = {.x = 50, .y = 100, .w = 20, .h = 30}; */
-  /* SDL_RenderRect(renderer, &frect); */
-
-  /* if (snake_head_rect != NULL) { */
-  /*   char rectange_x_location[4], rectange_y_location[4]; */
-  /*   SDL_itoa(snake_head_rect->x, rectange_x_location, 10); */
-  /*   SDL_itoa(snake_head_rect->y, rectange_y_location, 10); */
-  /*   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); */
-  /*  */
-  /*   #<{(| scale = 4.0f; |)}># */
-  /*   #<{(| SDL_SetRenderScale(renderer, scale, scale); |)}># */
-  /*   SDL_RenderDebugText(renderer, 0, 0, rectange_x_location); */
-  /*   SDL_RenderDebugText(renderer, 0, 10, rectange_y_location); */
-  /* } */
   size_t score = get_snake_length(snake) - 1;
   render_text(score);
   if (get_game_mode(game) == QUIT) {
@@ -385,7 +311,6 @@ SDL_AppIterate(void* appstate) {
   };
 
   SDL_RenderPresent(renderer);
-  /* free(my_frects); */
   return SDL_APP_CONTINUE;
 }
 
