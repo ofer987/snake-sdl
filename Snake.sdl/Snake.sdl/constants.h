@@ -10,9 +10,6 @@
 #define WIDTH                  10
 #define HEIGHT                 10
 
-#define SHIFT_WIDTH_SCREEN     1
-#define SHIFT_HEIGHT_SCREEN    1
-
 #define HORIZONTAL_TILES_COUNT MAZE_WIDTH / WIDTH
 #define VERTICAL_TILES_COUNT   MAZE_HEIGHT / HEIGHT
 
