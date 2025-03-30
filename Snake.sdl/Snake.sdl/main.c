@@ -193,25 +193,28 @@ SDL_AppIterate(void* appstate) {
     switch (screen_coordinates->type) {
       case AVAILABLE:
         red = 0;
-        blue = 0;
         green = 0;
+        blue = 0;
+
         break;
       case USED_BY_SNAKE_HEAD:
         snake_head_rect = &my_frects[index];
 
-        red = 255;
-        blue = 0;
+        red = 0;
         green = 0;
+        blue = 255;
+
         break;
       case USED_BY_SNAKE_TAIL:
         red = 0;
+        green = 255;
         blue = 255;
-        green = 0;
+
         break;
       case USED_BY_FOOD:
         red = 0;
-        blue = 0;
         green = 255;
+        blue = 0;
 
         break;
       case USED_BY_TOP_LEFT_BORDER:
@@ -236,7 +239,7 @@ SDL_AppIterate(void* appstate) {
         break;
     }
 
-    SDL_SetRenderDrawColor(renderer, red, blue, green, 255);
+    SDL_SetRenderDrawColor(renderer, red, green, blue, 255);
     SDL_RenderFillRect(renderer, &my_frects[index]);
 
     index += 1;
