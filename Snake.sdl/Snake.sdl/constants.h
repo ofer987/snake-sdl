@@ -1,11 +1,12 @@
 #ifndef SNAKE_SDL_SNAKE_SDL_CONSTANTS_H_
 #define SNAKE_SDL_SNAKE_SDL_CONSTANTS_H_
 
-#define RESOLUTION_WIDTH       800
-#define RESOLUTION_HEIGHT      600
+#define RESOLUTION_WIDTH       580
+#define RESOLUTION_HEIGHT      680
 
-#define MAZE_WIDTH             360
-#define MAZE_HEIGHT            220
+#define MAZE_WIDTH             160
+#define MAZE_HEIGHT            160
+#define TEXT_HEIGHT_SHIFT      140
 
 #define WIDTH                  10
 #define HEIGHT                 10

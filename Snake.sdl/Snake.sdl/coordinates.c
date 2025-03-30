@@ -66,7 +66,7 @@ init_food(void) {
   }
 
   FOOD.type = USED_BY_FOOD;
-  FOOD.x = 20;
+  FOOD.x = 10;
   FOOD.y = 10;
 
   return &FOOD;
