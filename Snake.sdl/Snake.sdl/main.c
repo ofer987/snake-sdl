@@ -189,7 +189,6 @@ SDL_AppIterate(void* appstate) {
     my_frects[index].w = 1;
     my_frects[index].h = 1;
 
-
     switch (screen_coordinates->type) {
       case AVAILABLE:
         red = 0;
