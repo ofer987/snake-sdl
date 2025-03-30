@@ -1306,7 +1306,7 @@
 				F3D46AC92D20625800D9CBDF /* SDL_vulkan.h */,
 			);
 			name = "Public Headers";
-			path = ../../include/SDL3;
+			path = ../../Frameworks/SDL3/include/SDL3;
 			sourceTree = "<group>";
 		};
 		034768DDFF38A45A11DB9C8B /* Products */ = {
@@ -1390,7 +1390,7 @@
 				F386F6E52884663E001840AA /* SDL_utils_c.h */,
 			);
 			name = "Library Source";
-			path = ../../src;
+			path = ../../Frameworks/SDL3/src;
 			sourceTree = "<group>";
 		};
 		5616CA47252BB278005D5928 /* misc */ = {
@@ -3103,11 +3103,11 @@
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					../../include,
-					../../include/build_config,
-					../../src,
-					../../src/hidapi/hidapi,
-					../../src/video/khronos,
+					../../Frameworks/SDL3/include,
+					../../Frameworks/SDL3/include/build_config,
+					../../Frameworks/SDL3/src,
+					../../Frameworks/SDL3/src/hidapi/hidapi,
+					../../Frameworks/SDL3/src/video/khronos,
 					"$(VULKAN_SDK)/include",
 					/usr/X11R6/include,
 				);
@@ -3164,11 +3164,11 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "$(CONFIG_PREPROCESSOR_DEFINITIONS)";
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				HEADER_SEARCH_PATHS = (
-					../../include,
-					../../include/build_config,
-					../../src,
-					../../src/hidapi/hidapi,
-					../../src/video/khronos,
+					../../Frameworks/SDL3/include,
+					../../Frameworks/SDL3/include/build_config,
+					../../Frameworks/SDL3/src,
+					../../Frameworks/SDL3/src/hidapi/hidapi,
+					../../Frameworks/SDL3/src/video/khronos,
 					"$(VULKAN_SDK)/include",
 					/usr/X11R6/include,
 				);
