@@ -94,6 +94,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
       switch (key) {
         case SDLK_LEFT:
+          /* FALLTHROUGH */
         case SDLK_H:
           if (current_movement != RIGHT) {
             set_current_movement(game, LEFT);
@@ -101,6 +102,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
           break;
         case SDLK_UP:
+          /* FALLTHROUGH */
         case SDLK_K:
           if (current_movement != DOWN) {
             set_current_movement(game, UP);
@@ -108,6 +110,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
           break;
         case SDLK_RIGHT:
+          /* FALLTHROUGH */
         case SDLK_L:
           if (current_movement != LEFT) {
             set_current_movement(game, RIGHT);
@@ -115,6 +118,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
           break;
         case SDLK_DOWN:
+          /* FALLTHROUGH */
         case SDLK_J:
           if (current_movement != UP) {
             set_current_movement(game, DOWN);
@@ -261,12 +265,19 @@ SDL_AppIterate(void* appstate) {
 
         break;
       case USED_BY_TOP_LEFT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_TOP_RIGHT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_BOTTOM_RIGHT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_BOTTOM_LEFT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_TOP_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_RIGHT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_BOTTOM_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_LEFT_BORDER:
         red = 95;
         green = 74;
