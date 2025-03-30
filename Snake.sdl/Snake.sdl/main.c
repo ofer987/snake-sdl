@@ -19,6 +19,7 @@
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_stdinc.h"
 #include "SDL3/SDL_timer.h"
+#include "SDL3/SDL_video.h"
 
 #define SDL_MAIN_USE_CALLBACKS 1 /* use the callbacks instead of main() */
 #include <SDL3/SDL.h>
@@ -46,8 +47,8 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
   SDL_HideCursor();
 
   /* Create the window */
-  if (!SDL_CreateWindowAndRenderer("Hello World", RESOLUTION_WIDTH, RESOLUTION_HEIGHT, SDL_WINDOW_FULLSCREEN, &window,
-                                   &renderer)) {
+  if (!SDL_CreateWindowAndRenderer("Hello World", RESOLUTION_WIDTH, RESOLUTION_HEIGHT,
+                                   SDL_WINDOW_MAXIMIZED | SDL_WINDOW_INPUT_FOCUS, &window, &renderer)) {
     SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
     return SDL_APP_FAILURE;
   }
@@ -134,47 +135,47 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
 void
 render_text(size_t score) {
-  const float scale = 4.0f;
+  const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT - 20, "Score is: %zu", score);
+  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 0, "Score: %zu", score);
 }
 
 void
 render_keys() {
-  const float scale = 4.0f;
+  const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Press:\t\t  (Q)uit | (R)estart | (P)ause");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Press: (Q)uit | (R)estart | (P)ause");
 }
 
 void
 render_lost_keys() {
-  const float scale = 4.0f;
+  const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Press:\t\t  (Q)uit | (R)estart");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Press: (Q)uit | (R)estart");
 }
 
 void
 render_pause() {
-  const float scale = 4.0f;
+  const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT, "Game is Paused. Any key to continue");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Game is Paused. Any key to continue");
 }
 
 void
 render_lost() {
-  const float scale = 4.0f;
+  const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT, "You have lost!");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "You have lost!");
 }
 
 /* This function runs once per frame, and is the heart of the program. */
