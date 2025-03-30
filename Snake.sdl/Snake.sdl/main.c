@@ -70,10 +70,28 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
   if (event->type == SDL_EVENT_KEY_DOWN) {
     SDL_Keycode key = event->key.key;
     switch (key) {
-      case SDLK_Q: return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
+      case SDLK_Q:
+        set_game_mode(game, QUIT);
+
+        return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
+      case SDLK_R:
+        destroy_game(game);
+
+        // Set to NULL for best-practice
+        game = NULL;
+        game = init_game(HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
+
+        return SDL_APP_CONTINUE;
+      case SDLK_P:
+        set_current_movement(game, NOTHING);
+        set_game_mode(game, PAUSE);
+
+        return SDL_APP_CONTINUE;
     }
 
-    if (game_mode != QUIT) {
+    if (game_mode == START || game_mode == CONTINUE || game_mode == PAUSE) {
+      set_game_mode(game, CONTINUE);
+
       switch (key) {
         case SDLK_LEFT:
         case SDLK_H:
@@ -126,6 +144,24 @@ render_keys() {
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
   SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Press:\t\t  (Q)uit | (R)estart | (P)ause");
+}
+
+void
+render_lost_keys() {
+  const float scale = 4.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Press:\t\t  (Q)uit | (R)estart");
+}
+
+void
+render_pause() {
+  const float scale = 4.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT, "Game is Paused. Any key to continue");
 }
 
 void
@@ -255,10 +291,19 @@ SDL_AppIterate(void* appstate) {
 
   size_t score = get_snake_length(snake) - 1;
   render_text(score);
-  render_keys();
 
-  if (get_game_mode(game) == QUIT) {
-    render_lost();
+  enum GAME_MODES game_mode = get_game_mode(game);
+  switch (game_mode) {
+    case QUIT:
+      render_lost();
+      render_lost_keys();
+
+      break;
+    case PAUSE:
+      render_pause();
+
+      /* FALLTHROUGH */
+    default: render_keys(); break;
   }
 
   SDL_RenderPresent(renderer);

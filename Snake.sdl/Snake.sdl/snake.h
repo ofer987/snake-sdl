@@ -20,5 +20,6 @@ bool has_just_eaten_food(Snake*, Coordinates*);
 Coordinates* get_snake_head(Snake* snake);
 size_t get_snake_length(Snake* snake);
 bool has_snaked_collided(Snake* snake, Coordinates** screen);
+void destroy_snake(Snake* snake);
 
 #endif // SNAKE_SDL_SNAKE_SDL_SNAKE_H_

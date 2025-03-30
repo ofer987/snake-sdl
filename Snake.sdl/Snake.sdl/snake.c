@@ -189,3 +189,14 @@ has_just_eaten_food(Snake* snake, Coordinates* food) {
 
   return true;
 }
+
+void
+destroy_snake(Snake* snake) {
+  Coordinates* coordinates = snake->head;
+  while (coordinates != NULL) {
+    Coordinates* next_coordinates = coordinates->next;
+    free(coordinates);
+
+    coordinates = next_coordinates;
+  }
+}
