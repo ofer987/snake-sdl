@@ -70,12 +70,31 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
   if (event->type == SDL_EVENT_KEY_DOWN) {
     SDL_Keycode key = event->key.key;
     switch (key) {
-      case SDLK_Q: return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
+      case SDLK_Q:
+        set_game_mode(game, QUIT);
+
+        return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
+      case SDLK_R:
+        destroy_game(game);
+
+        // Set to NULL for best-practice
+        game = NULL;
+        game = init_game(HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
+
+        return SDL_APP_CONTINUE;
+      case SDLK_P:
+        set_current_movement(game, NOTHING);
+        set_game_mode(game, PAUSE);
+
+        return SDL_APP_CONTINUE;
     }
 
-    if (game_mode != QUIT) {
+    if (game_mode == START || game_mode == CONTINUE || game_mode == PAUSE) {
+      set_game_mode(game, CONTINUE);
+
       switch (key) {
         case SDLK_LEFT:
+          /* FALLTHROUGH */
         case SDLK_H:
           if (current_movement != RIGHT) {
             set_current_movement(game, LEFT);
@@ -83,6 +102,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
           break;
         case SDLK_UP:
+          /* FALLTHROUGH */
         case SDLK_K:
           if (current_movement != DOWN) {
             set_current_movement(game, UP);
@@ -90,6 +110,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
           break;
         case SDLK_RIGHT:
+          /* FALLTHROUGH */
         case SDLK_L:
           if (current_movement != LEFT) {
             set_current_movement(game, RIGHT);
@@ -97,6 +118,7 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
           break;
         case SDLK_DOWN:
+          /* FALLTHROUGH */
         case SDLK_J:
           if (current_movement != UP) {
             set_current_movement(game, DOWN);
@@ -120,13 +142,39 @@ render_text(size_t score) {
 }
 
 void
-render_failure() {
+render_keys() {
   const float scale = 4.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Lost");
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT, "Press Q to Quit");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Press:\t\t  (Q)uit | (R)estart | (P)ause");
+}
+
+void
+render_lost_keys() {
+  const float scale = 4.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Press:\t\t  (Q)uit | (R)estart");
+}
+
+void
+render_pause() {
+  const float scale = 4.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT, "Game is Paused. Any key to continue");
+}
+
+void
+render_lost() {
+  const float scale = 4.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT, "You have lost!");
 }
 
 /* This function runs once per frame, and is the heart of the program. */
@@ -217,12 +265,19 @@ SDL_AppIterate(void* appstate) {
 
         break;
       case USED_BY_TOP_LEFT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_TOP_RIGHT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_BOTTOM_RIGHT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_BOTTOM_LEFT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_TOP_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_RIGHT_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_BOTTOM_BORDER:
+        /* FALLTHROUGH */
       case USED_BY_LEFT_BORDER:
         red = 95;
         green = 74;
@@ -247,9 +302,20 @@ SDL_AppIterate(void* appstate) {
 
   size_t score = get_snake_length(snake) - 1;
   render_text(score);
-  if (get_game_mode(game) == QUIT) {
-    render_failure();
-  };
+
+  enum GAME_MODES game_mode = get_game_mode(game);
+  switch (game_mode) {
+    case QUIT:
+      render_lost();
+      render_lost_keys();
+
+      break;
+    case PAUSE:
+      render_pause();
+
+      /* FALLTHROUGH */
+    default: render_keys(); break;
+  }
 
   SDL_RenderPresent(renderer);
   return SDL_APP_CONTINUE;

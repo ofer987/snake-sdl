@@ -4,7 +4,7 @@
 #define RESOLUTION_WIDTH       800
 #define RESOLUTION_HEIGHT      600
 
-#define MAZE_WIDTH             350
+#define MAZE_WIDTH             360
 #define MAZE_HEIGHT            220
 
 #define WIDTH                  10

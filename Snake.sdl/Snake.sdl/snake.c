@@ -10,13 +10,21 @@ bool
 has_collided(enum TILE_TYPES tile_type) {
   switch (tile_type) {
     case USED_BY_SNAKE_TAIL:
+      /* FALLTHROUGH */
     case USED_BY_LEFT_BORDER:
+      /* FALLTHROUGH */
     case USED_BY_RIGHT_BORDER:
+      /* FALLTHROUGH */
     case USED_BY_TOP_BORDER:
+      /* FALLTHROUGH */
     case USED_BY_BOTTOM_BORDER:
+      /* FALLTHROUGH */
     case USED_BY_TOP_LEFT_BORDER:
+      /* FALLTHROUGH */
     case USED_BY_TOP_RIGHT_BORDER:
+      /* FALLTHROUGH */
     case USED_BY_BOTTOM_LEFT_BORDER:
+      /* FALLTHROUGH */
     case USED_BY_BOTTOM_RIGHT_BORDER: return true;
     default: return false;
   };
@@ -188,4 +196,15 @@ has_just_eaten_food(Snake* snake, Coordinates* food) {
   snake->length += 1;
 
   return true;
+}
+
+void
+destroy_snake(Snake* snake) {
+  Coordinates* coordinates = snake->head;
+  while (coordinates != NULL) {
+    Coordinates* next_coordinates = coordinates->next;
+    free(coordinates);
+
+    coordinates = next_coordinates;
+  }
 }

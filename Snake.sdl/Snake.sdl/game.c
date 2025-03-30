@@ -277,3 +277,29 @@ rerender_screen(Game* game) {
 
   render_screen(game);
 }
+
+void
+destroy_game(Game* game) {
+  destroy_screen(game->screen, game->width * game->height);
+  game->screen = NULL;
+
+  free(game->available_tiles);
+  game->available_tiles = NULL;
+
+  free(game->top_left_corner);
+  game->top_left_corner = NULL;
+
+  free(game->top_right_corner);
+  game->top_right_corner = NULL;
+
+  free(game->bottom_right_corner);
+  game->bottom_right_corner = NULL;
+
+  free(game->bottom_left_corner);
+  game->bottom_left_corner = NULL;
+
+  game->current_movement = NOTHING;
+
+  destroy_snake(game->snake);
+  game->snake = NULL;
+}
