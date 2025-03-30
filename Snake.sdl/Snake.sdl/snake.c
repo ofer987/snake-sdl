@@ -6,6 +6,22 @@
 #include "./snake.h"
 #include "./types.h"
 
+bool
+has_collided(enum TILE_TYPES tile_type) {
+  switch (tile_type) {
+    case USED_BY_SNAKE_TAIL:
+    case USED_BY_LEFT_BORDER:
+    case USED_BY_RIGHT_BORDER:
+    case USED_BY_TOP_BORDER:
+    case USED_BY_BOTTOM_BORDER:
+    case USED_BY_TOP_LEFT_BORDER:
+    case USED_BY_TOP_RIGHT_BORDER:
+    case USED_BY_BOTTOM_LEFT_BORDER:
+    case USED_BY_BOTTOM_RIGHT_BORDER: return true;
+    default: return false;
+  };
+}
+
 void
 move_snake(Coordinates* coordinates, size_t new_x, size_t new_y) {
   while (coordinates != NULL) {
@@ -22,56 +38,36 @@ move_snake(Coordinates* coordinates, size_t new_x, size_t new_y) {
   }
 }
 
-bool
+void
 move_left(Coordinates* coordinates) {
-  if (coordinates->x < 1) {
-    return false;
-  }
-
   size_t new_x = coordinates->x - 1;
   size_t new_y = coordinates->y;
 
   move_snake(coordinates, new_x, new_y);
-  return true;
 }
 
-bool
+void
 move_up(Coordinates* coordinates) {
-  if (coordinates->y < 1) {
-    return false;
-  }
-
   size_t new_x = coordinates->x;
   size_t new_y = coordinates->y - 1;
 
   move_snake(coordinates, new_x, new_y);
-  return true;
 }
 
-bool
+void
 move_right(Coordinates* coordinates) {
-  if (coordinates->x >= HORIZONTAL_TILES_COUNT - 1) {
-    return false;
-  }
-
   size_t new_x = coordinates->x + 1;
   size_t new_y = coordinates->y;
 
   move_snake(coordinates, new_x, new_y);
-  return true;
 }
 
-bool
+void
 move_down(Coordinates* coordinates) {
-  if (coordinates->y >= VERTICAL_TILES_COUNT - 1) {
-    return false;
-  }
-
   size_t new_x = coordinates->x;
   size_t new_y = coordinates->y + 1;
 
   move_snake(coordinates, new_x, new_y);
-  return true;
 }
 
 bool snake_inited = false;
@@ -98,7 +94,7 @@ init_snake(size_t x, size_t y) {
 }
 
 Coordinates*
-get_head(Snake* snake) {
+get_snake_head(Snake* snake) {
   return snake->head;
 }
 
@@ -137,27 +133,28 @@ has_collided_with_tail(Snake* snake) {
   return false;
 }
 
-bool
+void
 rerender_snake(Snake* snake, enum MOVEMENTS current_movement) {
   switch (current_movement) {
-    case LEFT: return move_left(snake->head);
-    case UP: return move_up(snake->head);
-    case RIGHT: return move_right(snake->head);
-    case DOWN: return move_down(snake->head);
+    case LEFT: move_left(snake->head); break;
+    case UP: move_up(snake->head); break;
+    case RIGHT: move_right(snake->head); break;
+    case DOWN: move_down(snake->head); break;
     default: break;
   }
-
-  return true;
 }
 
 bool
-has_snaked_collided(Snake* snake) {
-  if (has_collided_with_tail(snake)) {
+has_snaked_collided(Snake* snake, Coordinates** screen) {
+  size_t index = x_y_to_index(snake->head->x, snake->head->y);
+  // 0b100000000000 is the Snake head
+  // 0b000000000100 is the Snake tail
+  // And the borders are equal or greater than
+  // 0b000000001000.
+  // Therefore,
+  // there is a collision if the number is at least 0b100000000100
+  if (screen[index]->type >= 0b100000000100) {
     return true;
-  }
-
-  if (has_collided_with_border(snake)) {
-    return false;
   }
 
   return false;
@@ -191,9 +188,4 @@ has_just_eaten_food(Snake* snake, Coordinates* food) {
   snake->length += 1;
 
   return true;
-}
-
-Coordinates*
-get_snake_head(Snake* snake) {
-  return snake->head;
 }

@@ -22,7 +22,7 @@ enum MOVEMENTS get_current_movement(Game*);
 void set_current_movement(Game*, enum MOVEMENTS);
 void rerender_screen(Game*);
 
-Coordinates* get_screen(Game*);
+Coordinates** get_screen(Game*);
 
 bool change_food_location(Game*);
 
@@ -31,6 +31,7 @@ Coordinates* get_bottom_left_corner(Game* game);
 Coordinates* get_top_right_corner(Game* game);
 Coordinates* get_bottom_right_corner(Game* game);
 
+Coordinates* get_screen_coordinate(Game* game, size_t index);
 enum GAME_MODES get_game_mode(Game* game);
 void set_game_mode(Game* game, enum GAME_MODES mode);
 

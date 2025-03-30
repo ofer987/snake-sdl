@@ -12,12 +12,15 @@ struct _Game {
   Coordinates** available_tiles;
   size_t available_tiles_count;
 
-  Coordinates** screen_indexer;
-  Coordinates* screen;
+  /* Coordinates** screen_indexer; */
+  /* Coordinates** screen_indexer2; */
+  Coordinates** screen;
 
   Coordinates* food;
   Snake* snake;
   enum MOVEMENTS current_movement;
+
+  size_t width, height;
 
   Coordinates* top_left_corner;
   Coordinates* top_right_corner;
@@ -33,49 +36,93 @@ _init_snake(size_t width, size_t height) {
   return init_snake(middle_x, middle_y);
 }
 
+Coordinates**
+_init_screen(size_t width, size_t height) {
+  Coordinates** result = malloc(width * height * sizeof(Coordinates*));
+
+  size_t index = 0;
+  for (size_t y = 0; y < height; y += 1) {
+    for (size_t x = 0; x < width; x += 1) {
+      index = x_y_to_index(x, y);
+
+      Coordinates* coordinates = init_coordinates_x_y(x, y, AVAILABLE);
+      result[index] = coordinates;
+    }
+  }
+
+  return result;
+}
+
+/* void */
+/* _init_screen(Game* game, size_t total) { */
+/*   game->screen_indexer = malloc(total * sizeof(Coordinates*)); */
+/*   game->available_tiles = malloc(total * sizeof(Coordinates*)); */
+/*  */
+/*   Coordinates* current; */
+/*   Coordinates** prev = &game->screen; */
+/*  */
+/*   for (size_t index = 0; index < total; index += 1) { */
+/*     current = init_coordinates(index); */
+/*  */
+/*     *prev = current; */
+/*     prev = &current->next; */
+/*  */
+/*     game->screen_indexer[index] = current; */
+/*   } */
+/* } */
+
 void
-_init_screen(Game* game, size_t total) {
-  game->screen_indexer = malloc(total * sizeof(Coordinates*));
-  game->available_tiles = malloc(total * sizeof(Coordinates*));
+render_borders(Coordinates** screen, Coordinates* top_left_corner, Coordinates* top_right_corner,
+               Coordinates* bottom_left_corner, Coordinates* bottom_right_corner) {
+  size_t index = x_y_to_index(top_left_corner->x, top_left_corner->y);
+  screen[index]->type |= USED_BY_TOP_LEFT_BORDER;
 
-  Coordinates* current;
-  Coordinates** prev = &game->screen;
+  index = x_y_to_index(top_right_corner->x, top_right_corner->y);
+  screen[index]->type |= USED_BY_TOP_RIGHT_BORDER;
 
-  for (size_t index = 0; index < total; index += 1) {
-    current = init_coordinates(index);
+  index = x_y_to_index(bottom_left_corner->x, bottom_left_corner->y);
+  screen[index]->type |= USED_BY_BOTTOM_LEFT_BORDER;
 
-    *prev = current;
-    prev = &current->next;
+  index = x_y_to_index(bottom_right_corner->x, bottom_right_corner->y);
+  screen[index]->type |= USED_BY_BOTTOM_RIGHT_BORDER;
 
-    game->screen_indexer[index] = current;
+  // Render TOP border
+  size_t y = 0;
+  for (size_t x = 1; x < top_right_corner->x; x += 1) {
+    index = x_y_to_index(x, y);
+    screen[index]->type |= USED_BY_TOP_BORDER;
+  }
+
+  // Render LEFT border
+  size_t x = 0;
+  for (size_t y = 1; y < bottom_left_corner->y; y += 1) {
+    index = x_y_to_index(x, y);
+    screen[index]->type |= USED_BY_LEFT_BORDER;
+  }
+
+  // Render BOTTOM border
+  y = bottom_right_corner->y;
+  for (size_t x = 1; x < bottom_right_corner->x; x += 1) {
+    index = x_y_to_index(x, y);
+    screen[index]->type |= USED_BY_BOTTOM_BORDER;
+  }
+
+  // Render RIGHT border
+  x = top_right_corner->x;
+  for (size_t y = 1; y < bottom_right_corner->y; y += 1) {
+    index = x_y_to_index(x, y);
+    screen[index]->type |= USED_BY_RIGHT_BORDER;
   }
 }
 
-Game*
-init_game(size_t width, size_t height) {
-  if (width <= 0) {
-    exit(EXIT_FAILURE);
+void
+destroy_screen(Coordinates** screen, size_t screen_size) {
+  for (size_t index = 0; index < screen_size; index += 1) {
+    Coordinates* coordinates = screen[index];
+    free(coordinates);
   }
 
-  if (height <= 0) {
-    exit(EXIT_FAILURE);
-  }
-
-  Game* game = malloc(sizeof(Game));
-  Snake* snake = _init_snake(width, height);
-  _init_screen(game, (width) * (height));
-
-  game->mode = START;
-  game->snake = snake;
-  game->food = init_food();
-
-  game->top_left_corner = init_coordinates_x_y(0, 0, USED_BY_TOP_LEFT_BORDER);
-  game->top_right_corner = init_coordinates_x_y(width, 0, USED_BY_TOP_RIGHT_BORDER);
-
-  game->bottom_left_corner = init_coordinates_x_y(0, height, USED_BY_BOTTOM_LEFT_BORDER);
-  game->bottom_right_corner = init_coordinates_x_y(width, height, USED_BY_BOTTOM_RIGHT_BORDER);
-
-  return game;
+  free(screen);
 }
 
 Snake*
@@ -98,15 +145,15 @@ set_current_movement(Game* game, enum MOVEMENTS new_movement) {
   game->current_movement = new_movement;
 }
 
-void
-reinit_screen(Coordinates* screen) {
-  Coordinates* current = screen;
-  while (current != NULL) {
-    current->type = AVAILABLE;
-
-    current = current->next;
-  }
-}
+/* void */
+/* render_screen(Coordinates** screen, Coordinates* snake_head, Coordinates* food) { */
+/*   destroy_screen Coordinates* current = screen; */
+/*   while (current != NULL) { */
+/*     current->type = AVAILABLE; */
+/*  */
+/*     current = current->next; */
+/*   } */
+/* } */
 
 void
 count_available_tiles(Game* game) {
@@ -127,37 +174,47 @@ count_available_tiles(Game* game) {
 }
 
 void
-rerender_screen(Game* game) {
-  reinit_screen(game->screen);
-
-  Snake* snake = game->snake;
-  Coordinates* food = game->food;
-  size_t index;
-  size_t available_tile_count = 0;
-
+render_snake(Coordinates** screen, Coordinates* snake_head) {
   // Snake
-  Coordinates* coordinates = get_head(snake);
+  Coordinates* coordinates = snake_head;
   enum TILE_TYPES type = USED_BY_SNAKE_HEAD;
   while (coordinates != NULL) {
-    index = coordinates_to_index(coordinates->x, coordinates->y);
-    if (index >= 770) {
-      exit(EXIT_FAILURE);
-    }
-
-    game->screen_indexer[index]->type = type;
+    size_t index = x_y_to_index(coordinates->x, coordinates->y);
+    screen[index]->type |= type;
 
     type = USED_BY_SNAKE_TAIL;
     coordinates = coordinates->next;
   }
+}
 
-  // Food
-  index = coordinates_to_index(food->x, food->y);
-  game->screen_indexer[index]->type = USED_BY_FOOD;
+void
+render_food(Coordinates** screen, Coordinates* food) {
+  size_t index = coordinates_to_index(food->x, food->y);
+  screen[index]->type |= USED_BY_FOOD;
+}
 
-  count_available_tiles(game);
+void
+render_screen(Game* game) {
+  game->screen = _init_screen(game->width, game->height);
+
+  render_borders(game->screen, game->top_left_corner, game->top_right_corner, game->bottom_left_corner,
+                 game->bottom_right_corner);
+
+  Coordinates* snake_head = get_snake_head(game->snake);
+  render_snake(game->screen, snake_head);
+  render_food(game->screen, game->food);
 }
 
 Coordinates*
+get_screen_coordinate(Game* game, size_t index) {
+  if (index >= game->width * game->height) {
+    return NULL;
+  }
+
+  return game->screen[index];
+}
+
+Coordinates**
 get_screen(Game* game) {
   return game->screen;
 }
@@ -206,4 +263,43 @@ get_game_mode(Game* game) {
 void
 set_game_mode(Game* game, enum GAME_MODES mode) {
   game->mode = mode;
+}
+
+Game*
+init_game(size_t width, size_t height) {
+  if (width <= 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if (height <= 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  Game* game = malloc(sizeof(Game));
+  // TODO(ofer987: maybe send width and height as +2 for the borders
+  game->width = width + 2;
+  game->height = height + 2;
+
+  game->mode = START;
+  Snake* snake = _init_snake(game->width, game->height);
+  game->snake = snake;
+  game->food = init_food();
+
+  game->top_left_corner = init_coordinates_x_y(0, 0, USED_BY_TOP_LEFT_BORDER);
+  game->top_right_corner = init_coordinates_x_y(game->width - 1, 0, USED_BY_TOP_RIGHT_BORDER);
+
+  game->bottom_left_corner = init_coordinates_x_y(0, game->height - 1, USED_BY_BOTTOM_LEFT_BORDER);
+  game->bottom_right_corner = init_coordinates_x_y(game->width - 1, game->height - 1, USED_BY_BOTTOM_RIGHT_BORDER);
+
+  render_screen(game);
+
+  return game;
+}
+
+void
+rerender_screen(Game* game) {
+  destroy_screen(game->screen, game->width * game->height);
+  game->screen = NULL;
+
+  render_screen(game);
 }

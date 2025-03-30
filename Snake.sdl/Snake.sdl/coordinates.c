@@ -22,8 +22,8 @@ Coordinates*
 init_coordinates(size_t index) {
   Coordinates* result = malloc(sizeof(Coordinates));
 
-  size_t y = index / (HORIZONTAL_TILES_COUNT);
-  size_t x = index % (HORIZONTAL_TILES_COUNT);
+  size_t y = index / (HORIZONTAL_TILES_COUNT + 2);
+  size_t x = index % (HORIZONTAL_TILES_COUNT + 2);
 
   result->x = x;
   result->y = y;
@@ -48,8 +48,13 @@ destroy_coordinates(Coordinates* coordinates) {
 }
 
 size_t
+x_y_to_index(size_t x, size_t y) {
+  return y * (HORIZONTAL_TILES_COUNT + 2) + x;
+}
+
+size_t
 coordinates_to_index(size_t x, size_t y) {
-  return HORIZONTAL_TILES_COUNT * y + x;
+  return (HORIZONTAL_TILES_COUNT + 2) * y + x;
 }
 
 struct coordinates_struct*

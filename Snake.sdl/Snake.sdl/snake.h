@@ -14,11 +14,11 @@ Snake* init_snake(size_t x, size_t y);
 
 Coordinates* get_head(Snake*);
 
-bool rerender_snake(Snake*, enum MOVEMENTS);
+void rerender_snake(Snake* snake, enum MOVEMENTS current_movement);
 
 bool has_just_eaten_food(Snake*, Coordinates*);
-size_t get_snake_length(Snake* snake);
-bool has_snaked_collided(Snake* snake);
 Coordinates* get_snake_head(Snake* snake);
+size_t get_snake_length(Snake* snake);
+bool has_snaked_collided(Snake* snake, Coordinates** screen);
 
 #endif // SNAKE_SDL_SNAKE_SDL_SNAKE_H_
