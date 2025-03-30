@@ -120,13 +120,21 @@ render_text(size_t score) {
 }
 
 void
-render_failure() {
+render_keys() {
   const float scale = 4.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Lost");
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT, "Press Q to Quit");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT - 10, "Press:\t\t  (Q)uit | (R)estart | (P)ause");
+}
+
+void
+render_lost() {
+  const float scale = 4.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT, "You have lost!");
 }
 
 /* This function runs once per frame, and is the heart of the program. */
@@ -247,9 +255,11 @@ SDL_AppIterate(void* appstate) {
 
   size_t score = get_snake_length(snake) - 1;
   render_text(score);
+  render_keys();
+
   if (get_game_mode(game) == QUIT) {
-    render_failure();
-  };
+    render_lost();
+  }
 
   SDL_RenderPresent(renderer);
   return SDL_APP_CONTINUE;
