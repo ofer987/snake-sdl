@@ -32,12 +32,15 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 
-static float right_movement_span = 0;
-static SDL_FRect frect = {.x = 50, .y = 100, .w = 10, .h = 10};
-
 static Uint64 framerate_time = 0.0f;
 
 static Game* game;
+
+#ifdef DEBUG
+#define WINDOW_SCREEN_MODE SDL_WINDOW_FULLSCREEN
+#else
+#define WINDOW_SCREEN_MODE SDL_WINDOW_MAXIMIZED
+#endif
 
 /* This function runs once at startup. */
 SDL_AppResult
@@ -48,7 +51,7 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
 
   /* Create the window */
   if (!SDL_CreateWindowAndRenderer("Hello World", RESOLUTION_WIDTH, RESOLUTION_HEIGHT,
-                                   SDL_WINDOW_MAXIMIZED | SDL_WINDOW_INPUT_FOCUS, &window, &renderer)) {
+                                   WINDOW_SCREEN_MODE | SDL_WINDOW_INPUT_FOCUS, &window, &renderer)) {
     SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
     return SDL_APP_FAILURE;
   }
@@ -152,7 +155,7 @@ render_keys() {
 }
 
 void
-render_lost_keys() {
+render_lost_keys(void) {
   const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
@@ -161,7 +164,7 @@ render_lost_keys() {
 }
 
 void
-render_pause() {
+render_pause(void) {
   const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
@@ -170,7 +173,7 @@ render_pause() {
 }
 
 void
-render_lost() {
+render_lost(void) {
   const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);

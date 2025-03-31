@@ -59,8 +59,6 @@ coordinates_to_index(size_t x, size_t y) {
 
 struct coordinates_struct*
 init_food(void) {
-  srandom(time(NULL));
-
   if (is_food_generated) {
     return NULL;
   }
