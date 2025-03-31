@@ -39,6 +39,12 @@ static Uint64 framerate_time = 0.0f;
 
 static Game* game;
 
+#ifdef DEBUG
+#define WINDOW_SCREEN_MODE SDL_WINDOW_FULLSCREEN
+#else
+#define WINDOW_SCREEN_MODE SDL_WINDOW_MAXIMIZED
+#endif
+
 /* This function runs once at startup. */
 SDL_AppResult
 SDL_AppInit(void** appstate, int argc, char* argv[]) {
@@ -48,7 +54,7 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
 
   /* Create the window */
   if (!SDL_CreateWindowAndRenderer("Hello World", RESOLUTION_WIDTH, RESOLUTION_HEIGHT,
-                                   SDL_WINDOW_MAXIMIZED | SDL_WINDOW_INPUT_FOCUS, &window, &renderer)) {
+                                   WINDOW_SCREEN_MODE | SDL_WINDOW_INPUT_FOCUS, &window, &renderer)) {
     SDL_Log("Couldn't create window and renderer: %s", SDL_GetError());
     return SDL_APP_FAILURE;
   }
