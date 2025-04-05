@@ -7,43 +7,50 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		EAEDA8432D875FA20085BDA2 /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAEDA8412D875F8D0085BDA2 /* SDL3.framework */; };
+		EA51282F2DA19E4F003C857C /* SDL3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA51282E2DA19E4F003C857C /* SDL3.framework */; };
+		EA5128302DA19E4F003C857C /* SDL3.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA51282E2DA19E4F003C857C /* SDL3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		EAEDA8402D875F8D0085BDA2 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = EAEDA83A2D875F8D0085BDA2 /* SDL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BECDF66C0761BA81005FE872;
-			remoteInfo = SDL3;
+/* Begin PBXBuildRule section */
+		EA51282C2DA19C9F003C857C /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = pattern.proxy;
+			inputFiles = (
+			);
+			isEditable = 1;
+			outputFiles = (
+			);
+			script = "# Type a script or drag a script file from your workspace to insert its path.\n";
 		};
-/* End PBXContainerItemProxy section */
+/* End PBXBuildRule section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EA5128312DA19E4F003C857C /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				EA5128302DA19E4F003C857C /* SDL3.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		EA3DABB32D8DB5C2008C9692 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SDL.xcodeproj; sourceTree = "<group>"; };
+		EA51282E2DA19E4F003C857C /* SDL3.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL3.framework; path = /Library/Frameworks/SDL3.framework; sourceTree = "<group>"; };
 		EAD5E2292D960248008685B2 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SDL.xcodeproj; sourceTree = "<group>"; };
 		EAED3FEB2D877B680085BDA2 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SDL.xcodeproj; sourceTree = "<group>"; };
 		EAEDA8222D875F350085BDA2 /* Snake.sdl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Snake.sdl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAEDA83A2D875F8D0085BDA2 /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = SDL.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EAEDA86A2D8763EC0085BDA2 /* Exceptions for "Snake.sdl" folder in "Snake.sdl" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"pkg-support/resources/INSTALL.md",
-			);
-			target = EAEDA8212D875F350085BDA2 /* Snake.sdl */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EAEDA8242D875F350085BDA2 /* Snake.sdl */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				EAEDA86A2D8763EC0085BDA2 /* Exceptions for "Snake.sdl" folder in "Snake.sdl" target */,
-			);
 			path = Snake.sdl;
 			sourceTree = "<group>";
 		};
@@ -54,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAEDA8432D875FA20085BDA2 /* SDL3.framework in Frameworks */,
+				EA51282F2DA19E4F003C857C /* SDL3.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +109,6 @@
 		EAEDA83B2D875F8D0085BDA2 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EAEDA8412D875F8D0085BDA2 /* SDL3.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -110,6 +116,7 @@
 		EAEDA8422D875FA20085BDA2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EA51282E2DA19E4F003C857C /* SDL3.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -124,8 +131,10 @@
 				EAEDA81E2D875F350085BDA2 /* Sources */,
 				EAEDA81F2D875F350085BDA2 /* Frameworks */,
 				EAEDA8202D875F350085BDA2 /* Resources */,
+				EA5128312DA19E4F003C857C /* Embed Frameworks */,
 			);
 			buildRules = (
+				EA51282C2DA19C9F003C857C /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -150,6 +159,7 @@
 				TargetAttributes = {
 					EAEDA8212D875F350085BDA2 = {
 						CreatedOnToolsVersion = 16.2;
+						LastSwiftMigration = 1620;
 					};
 				};
 			};
@@ -189,16 +199,6 @@
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		EAEDA8412D875F8D0085BDA2 /* SDL3.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SDL3.framework;
-			remoteRef = EAEDA8402D875F8D0085BDA2 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		EAEDA8202D875F350085BDA2 /* Resources */ = {
@@ -341,16 +341,23 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Snake.sdl/Snake_sdl.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5C2RRQX4HS;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Snake.sdl/build/Debug",
 					"$(PROJECT_DIR)/Snake.sdl/build/EagerLinkingTBDs/Debug",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Snake in SDL";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -362,6 +369,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ofer.Snake-sdl";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -370,16 +379,23 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Snake.sdl/Snake_sdl.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 5C2RRQX4HS;
+				ENABLE_HARDENED_RUNTIME = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Snake.sdl/build/Debug",
 					"$(PROJECT_DIR)/Snake.sdl/build/EagerLinkingTBDs/Debug",
+					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 				);
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Snake in SDL";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.games";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
 				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
@@ -391,6 +407,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ofer.Snake-sdl";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
