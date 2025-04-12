@@ -1,4 +1,4 @@
 # Fragment common to C and C++ source files
 CompileFlags:
     Add:
-        - --include-directory=/Users/ofer987/me/sdl_snake_again/Frameworks/SDL3/include
+        - --include-directory=../../Frameworks/SDL3/include
