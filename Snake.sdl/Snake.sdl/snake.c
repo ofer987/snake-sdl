@@ -8,35 +8,34 @@
 bool
 has_collided(enum TILE_TYPES tile_type) {
   switch (tile_type) {
-    case USED_BY_SNAKE_TAIL:
-      /* FALLTHROUGH */
-    case USED_BY_LEFT_BORDER:
-      /* FALLTHROUGH */
-    case USED_BY_RIGHT_BORDER:
-      /* FALLTHROUGH */
-    case USED_BY_TOP_BORDER:
-      /* FALLTHROUGH */
-    case USED_BY_BOTTOM_BORDER:
-      /* FALLTHROUGH */
-    case USED_BY_TOP_LEFT_BORDER:
-      /* FALLTHROUGH */
-    case USED_BY_TOP_RIGHT_BORDER:
-      /* FALLTHROUGH */
-    case USED_BY_BOTTOM_LEFT_BORDER:
-      /* FALLTHROUGH */
-    case USED_BY_BOTTOM_RIGHT_BORDER: return true;
+    case USED_BY_SNAKE_TAIL: return true;
+    /* case USED_BY_LEFT_BORDER: */
+    /*   #<{(| FALLTHROUGH |)}># */
+    /* case USED_BY_RIGHT_BORDER: */
+    /*   #<{(| FALLTHROUGH |)}># */
+    /* case USED_BY_TOP_BORDER: */
+    /*   #<{(| FALLTHROUGH |)}># */
+    /* case USED_BY_BOTTOM_BORDER: */
+    /*   #<{(| FALLTHROUGH |)}># */
+    /* case USED_BY_TOP_LEFT_BORDER: */
+    /*   #<{(| FALLTHROUGH |)}># */
+    /* case USED_BY_TOP_RIGHT_BORDER: */
+    /*   #<{(| FALLTHROUGH |)}># */
+    /* case USED_BY_BOTTOM_LEFT_BORDER: */
+    /*   #<{(| FALLTHROUGH |)}># */
+    /* case USED_BY_BOTTOM_RIGHT_BORDER: return true; */
     default: return false;
   };
 }
 
 void
-move_snake(Coordinates* coordinates, size_t new_x, size_t new_y) {
+move_snake(Coordinates* coordinates, size_t new_x, size_t new_y, size_t width, size_t height) {
   while (coordinates != NULL) {
     size_t temp_x = coordinates->x;
     size_t temp_y = coordinates->y;
 
-    coordinates->x = new_x;
-    coordinates->y = new_y;
+    coordinates->x = ((new_x - 1) % width) + 1;
+    coordinates->y = ((new_y - 1) % height) + 1;
 
     new_x = temp_x;
     new_y = temp_y;
@@ -46,35 +45,35 @@ move_snake(Coordinates* coordinates, size_t new_x, size_t new_y) {
 }
 
 void
-move_left(Coordinates* coordinates) {
+move_left(Coordinates* coordinates, size_t width, size_t height) {
   size_t new_x = coordinates->x - 1;
   size_t new_y = coordinates->y;
 
-  move_snake(coordinates, new_x, new_y);
+  move_snake(coordinates, new_x, new_y, width, height);
 }
 
 void
-move_up(Coordinates* coordinates) {
+move_up(Coordinates* coordinates, size_t width, size_t height) {
   size_t new_x = coordinates->x;
   size_t new_y = coordinates->y - 1;
 
-  move_snake(coordinates, new_x, new_y);
+  move_snake(coordinates, new_x, new_y, width, height);
 }
 
 void
-move_right(Coordinates* coordinates) {
+move_right(Coordinates* coordinates, size_t width, size_t height) {
   size_t new_x = coordinates->x + 1;
   size_t new_y = coordinates->y;
 
-  move_snake(coordinates, new_x, new_y);
+  move_snake(coordinates, new_x, new_y, width, height);
 }
 
 void
-move_down(Coordinates* coordinates) {
+move_down(Coordinates* coordinates, size_t width, size_t height) {
   size_t new_x = coordinates->x;
   size_t new_y = coordinates->y + 1;
 
-  move_snake(coordinates, new_x, new_y);
+  move_snake(coordinates, new_x, new_y, width, height);
 }
 
 bool snake_inited = false;
@@ -85,7 +84,7 @@ struct _Snake {
   size_t length;
 };
 
-static struct _Snake SNAKE = { .head = NULL, .length = 0 };
+static struct _Snake SNAKE = {.head = NULL, .length = 0};
 
 Snake*
 init_snake(size_t x, size_t y) {
@@ -140,12 +139,12 @@ has_collided_with_tail(Snake* snake) {
 }
 
 void
-rerender_snake(Snake* snake, enum MOVEMENTS current_movement) {
+rerender_snake(Snake* snake, enum MOVEMENTS current_movement, size_t screen_width, size_t screen_height) {
   switch (current_movement) {
-    case LEFT: move_left(snake->head); break;
-    case UP: move_up(snake->head); break;
-    case RIGHT: move_right(snake->head); break;
-    case DOWN: move_down(snake->head); break;
+    case LEFT: move_left(snake->head, screen_width, screen_height); break;
+    case UP: move_up(snake->head, screen_width, screen_height); break;
+    case RIGHT: move_right(snake->head, screen_width, screen_height); break;
+    case DOWN: move_down(snake->head, screen_width, screen_height); break;
     default: break;
   }
 }
@@ -159,7 +158,7 @@ has_snaked_collided(Snake* snake, Coordinates** screen) {
   // 0b000000001000.
   // Therefore,
   // there is a collision if the number is at least 0b100000000100
-  if (screen[index]->type >= 0b100000000100) {
+  if (screen[index]->type == (USED_BY_SNAKE_HEAD | USED_BY_SNAKE_TAIL)) {
     return true;
   }
 

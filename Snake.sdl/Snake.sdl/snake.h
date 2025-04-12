@@ -14,7 +14,7 @@ Snake* init_snake(size_t x, size_t y);
 
 Coordinates* get_head(Snake*);
 
-void rerender_snake(Snake* snake, enum MOVEMENTS current_movement);
+void rerender_snake(Snake* snake, enum MOVEMENTS current_movement, size_t screen_width, size_t screen_height);
 
 bool has_just_eaten_food(Snake*, Coordinates*);
 Coordinates* get_snake_head(Snake* snake);
