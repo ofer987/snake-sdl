@@ -196,7 +196,7 @@ SDL_AppIterate(void* appstate) {
   Snake* snake = get_snake_location(game);
 
   enum MOVEMENTS current_movement = get_current_movement(game);
-  rerender_snake(snake, current_movement);
+  rerender_snake(snake, current_movement, HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
 
   rerender_screen(game);
   Coordinates** screen = get_screen(game);
