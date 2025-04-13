@@ -36,6 +36,7 @@ static SDL_Renderer* renderer = NULL;
 static Uint64 framerate_time = 0.0f;
 
 static Game* game;
+static bool movement_changed = false;
 
 #ifdef DEBUG
 #define WINDOW_SCREEN_MODE SDL_WINDOW_FULLSCREEN
@@ -94,6 +95,12 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
         return SDL_APP_CONTINUE;
     }
 
+    // Return early
+    // If the movement-change has not been rendered
+    if (movement_changed) {
+      return SDL_APP_CONTINUE;
+    }
+
     if (game_mode == START || game_mode == CONTINUE || game_mode == PAUSE) {
       set_game_mode(game, CONTINUE);
 
@@ -103,6 +110,8 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
         case SDLK_H:
           if (current_movement != RIGHT) {
             set_current_movement(game, LEFT);
+
+            movement_changed = true;
           }
 
           break;
@@ -111,6 +120,8 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
         case SDLK_K:
           if (current_movement != DOWN) {
             set_current_movement(game, UP);
+
+            movement_changed = true;
           }
 
           break;
@@ -119,6 +130,8 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
         case SDLK_L:
           if (current_movement != LEFT) {
             set_current_movement(game, RIGHT);
+
+            movement_changed = true;
           }
 
           break;
@@ -127,6 +140,8 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
         case SDLK_J:
           if (current_movement != UP) {
             set_current_movement(game, DOWN);
+
+            movement_changed = true;
           }
 
           break;
@@ -368,6 +383,8 @@ SDL_AppIterate(void* appstate) {
   }
 
   SDL_RenderPresent(renderer);
+  movement_changed = false;
+
   return SDL_APP_CONTINUE;
 }
 
