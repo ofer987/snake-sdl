@@ -131,6 +131,12 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 
           break;
       }
+
+      // Cheat Codes
+      switch (key) {
+        case SDLK_D: set_cheat_codes(game, NO_DEATH); break;
+        default: break;
+      }
     }
   }
 
@@ -210,7 +216,10 @@ SDL_AppIterate(void* appstate) {
 
   if (is_there_a_collision) {
     set_current_movement(game, NOTHING);
-    set_game_mode(game, QUIT);
+
+    if (!no_death(game)) {
+      set_game_mode(game, QUIT);
+    }
   }
 
   bool has_food_been_eaten = has_just_eaten_food(snake, get_food_location(game));
