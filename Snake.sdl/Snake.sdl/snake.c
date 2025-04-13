@@ -9,21 +9,6 @@ bool
 has_collided(enum TILE_TYPES tile_type) {
   switch (tile_type) {
     case USED_BY_SNAKE_TAIL: return true;
-    /* case USED_BY_LEFT_BORDER: */
-    /*   #<{(| FALLTHROUGH |)}># */
-    /* case USED_BY_RIGHT_BORDER: */
-    /*   #<{(| FALLTHROUGH |)}># */
-    /* case USED_BY_TOP_BORDER: */
-    /*   #<{(| FALLTHROUGH |)}># */
-    /* case USED_BY_BOTTOM_BORDER: */
-    /*   #<{(| FALLTHROUGH |)}># */
-    /* case USED_BY_TOP_LEFT_BORDER: */
-    /*   #<{(| FALLTHROUGH |)}># */
-    /* case USED_BY_TOP_RIGHT_BORDER: */
-    /*   #<{(| FALLTHROUGH |)}># */
-    /* case USED_BY_BOTTOM_LEFT_BORDER: */
-    /*   #<{(| FALLTHROUGH |)}># */
-    /* case USED_BY_BOTTOM_RIGHT_BORDER: return true; */
     default: return false;
   };
 }
