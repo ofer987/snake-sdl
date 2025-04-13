@@ -17,6 +17,12 @@ This is a Work-in-Progress! There might be bugs; but you could identify them by 
 
 Use the Vim keys **H, J, K, and L** to move around (or the arrow keys).
 
-**P** to Pause.
-**R** to Restart.
-**Q** to Quit.
+- **P** to Pause.
+- **R** to Restart.
+- **Q** to Quit.
+
+## Cheat Codes
+
+Press
+
+- **D** to _not_ die.
