@@ -8,6 +8,7 @@
 
 struct _Game {
   enum GAME_MODES mode;
+  enum CHEAT_CODES enabled_cheat_codes;
 
   Coordinates** screen;
 
@@ -302,4 +303,14 @@ destroy_game(Game* game) {
 
   destroy_snake(game->snake);
   game->snake = NULL;
+}
+
+void
+set_cheat_codes(Game* game, enum CHEAT_CODES cheat_codes) {
+  game->enabled_cheat_codes ^= cheat_codes;
+}
+
+bool
+no_death(Game* game) {
+  return (game->enabled_cheat_codes & NO_DEATH) > 0;
 }

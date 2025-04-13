@@ -34,6 +34,8 @@ Coordinates* get_bottom_right_corner(Game* game);
 Coordinates* get_screen_coordinate(Game* game, size_t index);
 enum GAME_MODES get_game_mode(Game* game);
 void set_game_mode(Game* game, enum GAME_MODES mode);
+void set_cheat_codes(Game* game, enum CHEAT_CODES cheat_codes);
+bool no_death(Game* game);
 
 void destroy_game(Game* game);
 #endif // SNAKE_SDL_SNAKE_SDL_GAME_H_

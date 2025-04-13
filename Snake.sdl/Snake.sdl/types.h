@@ -5,6 +5,11 @@
 
 enum MOVEMENTS { NOTHING, LEFT, UP, RIGHT, DOWN };
 
+enum CHEAT_CODES {
+  NONE = 0b0,
+  NO_DEATH = 0b1,
+};
+
 enum TILE_TYPES {
   AVAILABLE = 0b0,
   USED_BY_FOOD = 0b1,
