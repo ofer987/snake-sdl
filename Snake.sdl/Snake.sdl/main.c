@@ -9,6 +9,7 @@
   including commercial applications, and to alter it and redistribute it
   freely.
 */
+#include <stdint.h>
 #include <stdlib.h>
 #include "./types.h"
 #include "SDL3/SDL_events.h"
@@ -33,7 +34,11 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 
-static Uint64 framerate_time = 0.0f;
+static Uint64 MILLISECONDS_PER_FRAME = 10;
+static Uint64 MILLISECONDS_PER_SCREEN_RENDER = 100;
+
+static uint64_t framerate_time = 0.0f;
+static uint64_t rendered_movement_frames = 0;
 
 static Game* game;
 static bool movement_changed = false;
@@ -59,6 +64,9 @@ SDL_AppInit(void** appstate, int argc, char* argv[]) {
   }
 
   game = init_game(HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
+
+  // There are 1_000_000_000 nanoseconds in a second
+  /* ns_per_frame = 1000000000 / fps; */
 
   return SDL_APP_CONTINUE;
 }
@@ -206,18 +214,18 @@ render_lost(void) {
 /* This function runs once per frame, and is the heart of the program. */
 SDL_AppResult
 SDL_AppIterate(void* appstate) {
-  Uint64 new_framerate_time = SDL_GetTicks();
-
-  if (new_framerate_time < framerate_time + 100) {
-    return SDL_APP_CONTINUE;
-  }
-
-  framerate_time = new_framerate_time;
-
   Snake* snake = get_snake_location(game);
 
-  enum MOVEMENTS current_movement = get_current_movement(game);
-  rerender_snake(snake, current_movement, HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
+  // Move the snake
+  bool is_snake_rerendered = false;
+  uint64_t new_rendered_movement_frames = SDL_GetTicks();
+  if (new_rendered_movement_frames >= rendered_movement_frames + MILLISECONDS_PER_SCREEN_RENDER) {
+    enum MOVEMENTS current_movement = get_current_movement(game);
+
+    rerender_snake(snake, current_movement, HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
+    is_snake_rerendered = true;
+    rendered_movement_frames = new_rendered_movement_frames;
+  }
 
   rerender_screen(game);
   Coordinates** screen = get_screen(game);
@@ -226,8 +234,7 @@ SDL_AppIterate(void* appstate) {
     set_current_movement(game, NOTHING);
   }
 
-  rerender_screen(game);
-  bool is_there_a_collision = has_snaked_collided(snake, screen);
+  bool is_there_a_collision = is_snake_rerendered && has_snaked_collided(snake, screen);
 
   if (is_there_a_collision) {
     set_current_movement(game, NOTHING);
@@ -237,7 +244,7 @@ SDL_AppIterate(void* appstate) {
     }
   }
 
-  bool has_food_been_eaten = has_just_eaten_food(snake, get_food_location(game));
+  bool has_food_been_eaten = is_snake_rerendered && has_just_eaten_food(snake, get_food_location(game));
   if (has_food_been_eaten) {
     change_food_location(game);
 
@@ -253,7 +260,7 @@ SDL_AppIterate(void* appstate) {
   SDL_SetRenderScale(renderer, scale, scale);
 
   // Render screen
-  Uint8 red, green, blue;
+  Uint8 red = 0, green = 0, blue = 0;
   SDL_FRect my_frects[(HORIZONTAL_TILES_COUNT + 2) * (VERTICAL_TILES_COUNT + 2)];
   SDL_FRect* snake_head_rect = NULL;
 
@@ -384,6 +391,14 @@ SDL_AppIterate(void* appstate) {
 
   SDL_RenderPresent(renderer);
   movement_changed = false;
+
+  Uint64 new_framerate_time = SDL_GetTicks();
+
+  if (new_framerate_time < framerate_time + MILLISECONDS_PER_FRAME) {
+    SDL_Delay(framerate_time + MILLISECONDS_PER_FRAME - new_framerate_time);
+  }
+
+  framerate_time = new_framerate_time;
 
   return SDL_APP_CONTINUE;
 }
