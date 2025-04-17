@@ -34,8 +34,8 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 
-static Uint64 MILLISECONDS_PER_FRAME = 10;
-static Uint64 MILLISECONDS_PER_SCREEN_RENDER = 100;
+static Uint64 TEN_MILLISECONDS = 10;
+static Uint64 ONE_HUNDRED_MILLISECONDS = 100;
 
 static uint64_t framerate_time = 0.0f;
 static uint64_t rendered_movement_frames = 0;
@@ -211,22 +211,9 @@ render_lost(void) {
   SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "You have lost!");
 }
 
-/* This function runs once per frame, and is the heart of the program. */
-SDL_AppResult
-SDL_AppIterate(void* appstate) {
+void
+render(Game* game) {
   Snake* snake = get_snake_location(game);
-
-  // Move the snake
-  bool is_snake_rerendered = false;
-  uint64_t new_rendered_movement_frames = SDL_GetTicks();
-  if (new_rendered_movement_frames >= rendered_movement_frames + MILLISECONDS_PER_SCREEN_RENDER) {
-    enum MOVEMENTS current_movement = get_current_movement(game);
-
-    rerender_snake(snake, current_movement, HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
-    is_snake_rerendered = true;
-    rendered_movement_frames = new_rendered_movement_frames;
-  }
-
   rerender_screen(game);
   Coordinates** screen = get_screen(game);
 
@@ -234,7 +221,7 @@ SDL_AppIterate(void* appstate) {
     set_current_movement(game, NOTHING);
   }
 
-  bool is_there_a_collision = is_snake_rerendered && has_snaked_collided(snake, screen);
+  bool is_there_a_collision = has_snaked_collided(snake, screen);
 
   if (is_there_a_collision) {
     set_current_movement(game, NOTHING);
@@ -244,7 +231,7 @@ SDL_AppIterate(void* appstate) {
     }
   }
 
-  bool has_food_been_eaten = is_snake_rerendered && has_just_eaten_food(snake, get_food_location(game));
+  bool has_food_been_eaten = has_just_eaten_food(snake, get_food_location(game));
   if (has_food_been_eaten) {
     change_food_location(game);
 
@@ -391,11 +378,32 @@ SDL_AppIterate(void* appstate) {
 
   SDL_RenderPresent(renderer);
   movement_changed = false;
+}
+
+/* This function runs once per frame, and is the heart of the program. */
+SDL_AppResult
+SDL_AppIterate(void* appstate) {
+  Snake* snake = get_snake_location(game);
+
+  // Move the snake
+  bool is_snake_rerendered = false;
+  uint64_t new_rendered_movement_frames = SDL_GetTicks();
+  if (new_rendered_movement_frames >= rendered_movement_frames + ONE_HUNDRED_MILLISECONDS) {
+    enum MOVEMENTS current_movement = get_current_movement(game);
+
+    rerender_snake(snake, current_movement, HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
+    is_snake_rerendered = true;
+    rendered_movement_frames = new_rendered_movement_frames;
+  }
+
+  if (is_snake_rerendered) {
+    render(game);
+  }
 
   Uint64 new_framerate_time = SDL_GetTicks();
 
-  if (new_framerate_time < framerate_time + MILLISECONDS_PER_FRAME) {
-    SDL_Delay(framerate_time + MILLISECONDS_PER_FRAME - new_framerate_time);
+  if (new_framerate_time < framerate_time + TEN_MILLISECONDS) {
+    SDL_Delay(framerate_time + TEN_MILLISECONDS - new_framerate_time);
   }
 
   framerate_time = new_framerate_time;
