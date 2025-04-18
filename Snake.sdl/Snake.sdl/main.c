@@ -34,10 +34,9 @@
 static SDL_Window* window = NULL;
 static SDL_Renderer* renderer = NULL;
 
-static Uint64 TEN_MILLISECONDS = 10;
+static Uint32 TEN_MILLISECONDS = 10;
 static Uint64 ONE_HUNDRED_MILLISECONDS = 100;
 
-static uint64_t framerate_time = 0.0f;
 static uint64_t rendered_movement_frames = 0;
 
 static Game* game;
@@ -400,14 +399,7 @@ SDL_AppIterate(void* appstate) {
     render(game);
   }
 
-  Uint64 new_framerate_time = SDL_GetTicks();
-
-  if (new_framerate_time < framerate_time + TEN_MILLISECONDS) {
-    SDL_Delay(framerate_time + TEN_MILLISECONDS - new_framerate_time);
-  }
-
-  framerate_time = new_framerate_time;
-
+  SDL_Delay(TEN_MILLISECONDS);
   return SDL_APP_CONTINUE;
 }
 
