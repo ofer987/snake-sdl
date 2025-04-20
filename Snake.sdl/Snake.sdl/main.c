@@ -236,7 +236,7 @@ render_record(size_t score) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT - 10, "Record: %zu", score);
+  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT, "Record: %zu", score);
 }
 
 void
@@ -245,7 +245,7 @@ render_text(size_t score) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 0, "Score:  %zu", score);
+  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Score:  %zu", score);
 }
 
 void
@@ -254,7 +254,7 @@ render_keys(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Press:  (Q)uit | (R)estart | (P)ause");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart | (P)ause");
 }
 
 void
@@ -263,7 +263,7 @@ render_lost_keys(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Press:  (Q)uit | (R)estart");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart");
 }
 
 void
@@ -272,7 +272,7 @@ render_pause(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Game is Paused. Any key to continue");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Game is Paused. Any key to continue");
 }
 
 void
@@ -281,7 +281,7 @@ render_quit(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press Q again to Quit");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Press Q again to Quit");
 }
 
 void
@@ -290,7 +290,7 @@ render_lost(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "You have lost!");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "You have lost!");
 }
 
 void

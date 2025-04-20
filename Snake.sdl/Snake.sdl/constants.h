@@ -6,7 +6,7 @@
 
 #define MAZE_WIDTH             160
 #define MAZE_HEIGHT            160
-#define TEXT_HEIGHT_SHIFT      140
+#define TEXT_HEIGHT_SHIFT      130
 
 #define WIDTH                  10
 #define HEIGHT                 10
