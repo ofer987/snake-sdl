@@ -8,7 +8,7 @@
 #include "./snake.h"
 #include "./types.h"
 
-enum GAME_MODES { START, CONTINUE, PAUSE, WIN, QUIT };
+enum GAME_MODES { START, CONTINUE, PAUSE, WIN, LOST, QUIT };
 
 struct _Game;
 typedef struct _Game Game;
