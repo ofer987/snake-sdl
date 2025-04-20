@@ -10,6 +10,7 @@
   freely.
 */
 #include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "./types.h"
 #include "SDL3/SDL_events.h"
@@ -48,10 +49,56 @@ static bool movement_changed = false;
 #define WINDOW_SCREEN_MODE SDL_WINDOW_MAXIMIZED
 #endif
 
+static size_t RECORD = 0;
+static size_t SCORE = 0;
+static char const* const RECORD_PATH = "record.txt";
+
+size_t
+get_score(Game* game) {
+  Snake* snake = get_snake_location(game);
+  return get_snake_length(snake) - 1;
+}
+
+bool
+write_record(char* record_path, size_t record) {
+  FILE* path = fopen(record_path, "wt");
+  if (path == NULL) {
+    fprintf(stderr, "Failed to write the record (%zu) to %s\n", record, record_path);
+
+    return false;
+  }
+
+  fprintf(path, "%zu", record);
+  return true;
+}
+
+void
+render_achievement(size_t new_record) {
+  const float scale = 2.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugTextFormat(renderer, MAZE_WIDTH / 2.0, MAZE_HEIGHT / 2.0, "New Record:  %zu", new_record);
+}
+
+size_t
+read_current_record(char* path) {
+  FILE* file = fopen(path, "rt");
+  if (file == NULL) {
+    return 0;
+  }
+
+  size_t result = 0;
+  fscanf(file, "%zu", &result);
+
+  return result;
+}
+
 /* This function runs once at startup. */
 SDL_AppResult
 SDL_AppInit(void** appstate, int argc, char* argv[]) {
   srandom((unsigned)time(NULL));
+  RECORD = read_current_record((char*)RECORD_PATH);
 
   SDL_HideCursor();
 
@@ -84,15 +131,33 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
     SDL_Keycode key = event->key.key;
     switch (key) {
       case SDLK_Q:
+        SCORE = get_score(game);
         set_game_mode(game, QUIT);
 
-        return SDL_APP_SUCCESS; /* end the program, reporting success to the OS. */
+        // Press Q twice to quit the game
+        switch (game_mode) {
+          case LOST:
+            /* FALLTHROUGH */
+          case QUIT:
+            // end the program, reporting success to the OS.
+            return SDL_APP_SUCCESS;
+          default: break;
+        }
+
+        if (SCORE > RECORD) {
+          write_record((char*)RECORD_PATH, SCORE);
+        }
+
+        return SDL_APP_CONTINUE;
       case SDLK_R:
         destroy_game(game);
 
         // Set to NULL for best-practice
         game = NULL;
         game = init_game(HORIZONTAL_TILES_COUNT, VERTICAL_TILES_COUNT);
+        if (SCORE > RECORD) {
+          RECORD = SCORE;
+        }
 
         return SDL_APP_CONTINUE;
       case SDLK_P:
@@ -166,12 +231,21 @@ SDL_AppEvent(void* appstate, SDL_Event* event) {
 }
 
 void
+render_record(size_t score) {
+  const float scale = 2.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT, "Record: %zu", score);
+}
+
+void
 render_text(size_t score) {
   const float scale = 2.0f;
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 0, "Score: %zu", score);
+  SDL_RenderDebugTextFormat(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Score:  %zu", score);
 }
 
 void
@@ -180,7 +254,7 @@ render_keys(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Press: (Q)uit | (R)estart | (P)ause");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart | (P)ause");
 }
 
 void
@@ -189,7 +263,7 @@ render_lost_keys(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 10, "Press: (Q)uit | (R)estart");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Press:  (Q)uit | (R)estart");
 }
 
 void
@@ -198,7 +272,16 @@ render_pause(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "Game is Paused. Any key to continue");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Game is Paused. Any key to continue");
+}
+
+void
+render_quit(void) {
+  const float scale = 2.0f;
+
+  SDL_SetRenderScale(renderer, scale, scale);
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "Press Q again to Quit");
 }
 
 void
@@ -207,7 +290,7 @@ render_lost(void) {
 
   SDL_SetRenderScale(renderer, scale, scale);
   SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 20, "You have lost!");
+  SDL_RenderDebugText(renderer, 0, MAZE_HEIGHT + TEXT_HEIGHT_SHIFT + 30, "You have lost!");
 }
 
 void
@@ -226,7 +309,11 @@ render(Game* game) {
     set_current_movement(game, NOTHING);
 
     if (!no_death(game)) {
-      set_game_mode(game, QUIT);
+      if (SCORE > RECORD) {
+        write_record((char*)RECORD_PATH, get_score(game));
+      }
+
+      set_game_mode(game, LOST);
     }
   }
 
@@ -321,7 +408,7 @@ render(Game* game) {
     screen_coordinates = get_screen_coordinate(game, index);
   }
 
-  size_t score = get_snake_length(snake) - 1;
+  size_t score = get_score(game);
   size_t score_index = 0;
   Coordinates* snake_tail = get_snake_head(snake)->next;
   while (snake_tail != NULL) {
@@ -359,13 +446,29 @@ render(Game* game) {
     snake_tail = snake_tail->next;
   }
 
+  render_record(RECORD);
   render_text(score);
 
   enum GAME_MODES game_mode = get_game_mode(game);
   switch (game_mode) {
-    case QUIT:
+    case LOST:
       render_lost();
       render_lost_keys();
+
+      SCORE = score;
+      if (SCORE > RECORD) {
+        render_achievement(SCORE);
+      }
+
+      break;
+    case QUIT:
+      render_quit();
+      render_lost_keys();
+
+      SCORE = score;
+      if (SCORE > RECORD) {
+        render_achievement(SCORE);
+      }
 
       break;
     case PAUSE:
