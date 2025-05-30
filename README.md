@@ -2,6 +2,8 @@
 
 Implemented using [SDL3](https://wiki.libsdl.org/SDL3) for macOS.
 
+![Screenshot](https://raw.githubusercontent.com/ofer987/snake-sdl/refs/heads/master/images/snake-sdl-screenshot.jpg)
+
 ## Build Instructions
 
 1. Install [SDL3](https://wiki.libsdl.org/SDL3) into `/Library/Frameworks`.
