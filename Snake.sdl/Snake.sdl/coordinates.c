@@ -45,6 +45,7 @@ init_coordinates_x_y(size_t x, size_t y, enum TILE_TYPES type) {
 void
 destroy_coordinates(Coordinates* coordinates) {
   free(coordinates);
+  coordinates = NULL;
 }
 
 size_t

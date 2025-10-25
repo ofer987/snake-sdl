@@ -100,10 +100,11 @@ void
 destroy_screen(Coordinates** screen, size_t screen_size) {
   for (size_t index = 0; index < screen_size; index += 1) {
     Coordinates* coordinates = screen[index];
-    free(coordinates);
+    destroy_coordinates(coordinates);
   }
 
   free(screen);
+  screen = NULL;
 }
 
 Snake*
@@ -303,6 +304,9 @@ destroy_game(Game* game) {
 
   destroy_snake(game->snake);
   game->snake = NULL;
+
+  free(game);
+  game = NULL;
 }
 
 void
